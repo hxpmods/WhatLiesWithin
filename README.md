@@ -1,4 +1,4 @@
-# WhatLiesWithin
+# What Lies Within
 
 What Lies Within is an overhaul mod that focuses on new underground layers of the planet Nauvis. With each new underground layer comes new challenges and rewards. Do you have what it takes to find out exactly What Lies Within?
 
