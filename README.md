@@ -2,7 +2,7 @@
 
 What Lies Within is an overhaul mod that focuses on new underground layers of the planet Nauvis. With each new underground layer comes new challenges and rewards. Do you have what it takes to find out exactly What Lies Within?
 
-If you have any questions/comments/suggestions/concerns feel free to join my discord: https://discord.gg/G79WsJhETu or alternatively feel free to reach out to me personally on Discord at Niknoc#8830
+If you have any questions/comments/suggestions/concerns feel free to join my discord: https://discord.gg/q3tSrs3uRy or alternatively feel free to reach out to me personally on Discord at Niknoc#8830
 
 Thanks for playing!!!
 
