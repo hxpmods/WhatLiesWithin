@@ -1,0 +1,15 @@
+{
+    "name": "WhatLiesWithin",
+    "version": "0.0.51009",
+    "title": "What Lies Within",
+    "author": "MrNiknoc",
+    "dependencies": [
+        "base >= 1.1.0",
+        "AngryBiters >= 0.0.3",
+        "? informatron >= 0.2.1",
+        "? AfraidOfTheDark >= 1.1.1"
+    ],
+    "factorio_version": "1.1",
+    "description": "Beta version in active development. Play at your own risk. Overhaul mod. Adds many underground layers to the world, each with their own risks and rewards.",
+    "homepage": "https://discord.gg/q3tSrs3uRy"
+}
