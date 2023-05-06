@@ -160,10 +160,11 @@ function GuiClick(event)
     end
 end
 
-function PlayerBuiltEntity(event)
-    local player = game.get_player(event.player_index)
+function OnBuiltEntity(event)
+    --local player = game.get_player(event.player_index)
     local name = event.created_entity.name
-
+    local entity = event.created_entity
+    local surface = entity.surface
 
     if name == "wlw-item-elevator" then
         -- when we place an item elevator, we need to make the next underground layer if it doesn't already exist.
@@ -171,11 +172,11 @@ function PlayerBuiltEntity(event)
         -- check if it already exists
 
         -- first check if we're on an underground layer
-        if string.find(player.surface.name, "underground %- layer") then
+        if string.find(surface.name, "underground %- layer") then
             -- we are on an underground layer, so we need to check the next underground layer.
-            local _, underground_layer_index_end = string.find(player.surface.name, "underground %- layer ")
-            local top_surface_name = string.gsub(player.surface.name, " underground %- layer %d+", "")
-            local current_underground_layer_number = tonumber(string.sub(player.surface.name, underground_layer_index_end + 1))
+            local _, underground_layer_index_end = string.find(surface.name, "underground %- layer ")
+            local top_surface_name = string.gsub(surface.name, " underground %- layer %d+", "")
+            local current_underground_layer_number = tonumber(string.sub(surface.name, underground_layer_index_end + 1))
             local target_underground_layer_number = current_underground_layer_number + 1
 
             if global.zones_by_name[top_surface_name .. " underground - layer " .. tostring(target_underground_layer_number)] then
@@ -186,11 +187,11 @@ function PlayerBuiltEntity(event)
             end
         else
             -- we are not on an underground layer, so we need to check the first underground layer of this world.
-            if global.zones_by_name[player.surface.name .. " underground - layer 1"] then
+            if global.zones_by_name[surface.name .. " underground - layer 1"] then
                 -- if we get here it exists already so do nothing.
             else
                 -- if we get here it doesn't exist, so make it.
-                Zone.create_underground_layer_given_top_surface_name(player.surface.name, 1)
+                Zone.create_underground_layer_given_top_surface_name(surface.name, 1)
             end
         end
 
@@ -440,7 +441,8 @@ script.on_init(OnInit)
 script.on_configuration_changed(OnConfigurationChanged)
 script.on_event(defines.events.on_tick, OnTick)
 script.on_event(defines.events.on_gui_click, GuiClick)
-script.on_event(defines.events.on_built_entity, PlayerBuiltEntity)
+script.on_event(defines.events.on_built_entity, OnBuiltEntity)
+script.on_event(defines.events.on_robot_built_entity, OnBuiltEntity)
 script.on_event(defines.events.on_entity_damaged, EntityDamaged)
 script.on_event(defines.events.on_entity_died, EntityDied)
 script.on_event(defines.events.on_entity_spawned, EntitySpawned)
