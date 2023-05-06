@@ -250,7 +250,9 @@ data:extend(
             },
             effects =
             {
-                {type = "unlock-recipe", recipe = "wlw-item-elevator"}
+                {type = "unlock-recipe", recipe = "wlw-item-elevator"},
+                {type = "unlock-recipe", recipe = "wlw-boring-drill"},
+                {type = "unlock-recipe", recipe = "wlw-boring-1"}
             }
         },
         {

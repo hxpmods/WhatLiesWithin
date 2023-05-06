@@ -10,7 +10,7 @@ data:extend(
             energy_required = 10,  
             --hidden = true,	
             --hidden_from_flow_stats = true,
-            hidden_from_player_crafting = true,
+            hide_from_player_crafting = true,
             always_show_made_in = false,
             enabled = true,
             ingredients = {
