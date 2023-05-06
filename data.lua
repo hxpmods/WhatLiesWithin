@@ -16,6 +16,7 @@ require("prototypes.entity.primitive-burner-generator")
 require("prototypes.entity.resources")
 require("prototypes.entity.turrets")
 require("prototypes.entity.units")
+require("prototypes.entity.boring-drill")
 
 -- fluids
 require("prototypes.fluid.fluids")
@@ -33,9 +34,12 @@ require("prototypes.item.lead-sheet")
 require("prototypes.item.sapling")
 require("prototypes.item.item-elevator")
 require("prototypes.item.wood-chips")
+require("prototypes.item.drill-bit")
+require("prototypes.item.boring-drill")
 
 -- recipes
 require("prototypes.recipes")
+require("prototypes.boring-recipes")
 
 -- recipe categories
 require("prototypes.recipe-categories")

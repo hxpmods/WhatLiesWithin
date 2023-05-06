@@ -2695,6 +2695,54 @@ data:extend(
             {
                 {type = "item", name = "wlw-wood-chips", amount = 2}
             }
+        },
+        {
+            type = "recipe",
+            name = "wlw-drill-bit",
+            category = "crafting",
+            energy_required = 1,
+            enabled = true,
+            ingredients =
+            {
+                {type = "item", name = "iron-plate", amount = 3},
+                {type = "item", name = "iron-gear-wheel", amount = 3}
+            },
+            results =
+            {
+                {type = "item", name = "wlw-drill-bit", amount = 1}
+            }
+        },
+        {
+            type = "recipe",
+            name = "wlw-boring-drill",
+            category = "wlw-surface-logistics",
+            energy_required = 0.5,
+            enabled = false,
+            ingredients =
+            {
+                {type = "item", name = "steel-plate", amount = 50},
+                {type = "item", name = "iron-gear-wheel", amount = 50},
+                {type = "item", name = "concrete", amount = 100},
+                {type = "item", name = "electronic-circuit", amount = 50}
+            },
+            results =
+            {
+                {type = "item", name = "wlw-boring-drill", amount = 1}
+            }
         }
     }
 )
+
+-- vanilla tweaks
+
+-- substitutes iron requirement for drill bits
+data.raw["recipe"]["burner-mining-drill"].normal.ingredients = {
+    {type = "item", name = "stone-furnace", amount = 1},
+    {type = "item", name = "wlw-drill-bit", amount = 1},
+}
+
+data.raw["recipe"]["electric-mining-drill"].normal.ingredients = {
+    {type = "item", name = "burner-mining-drill", amount = 1},
+    {type = "item", name = "iron-plate", amount = 10},
+    {type = "item", name = "electronic-circuit", amount = 3}
+}
