@@ -209,6 +209,36 @@ function Zone.delete_misplaced_autoplace_entities_all_surfaces()
     end
 end
 
+
+function Zone.get_root(surface)
+    -- first check if we're on an underground layer
+    if string.find(surface.name, "underground %- layer") then
+        -- we are on an underground layer, so we need to check the next underground layer.
+        local _, underground_layer_index_end = string.find(surface.name, "underground %- layer ")
+        local top_surface_name = string.gsub(surface.name, " underground %- layer %d+", "")
+        --local current_underground_layer_number = tonumber(string.sub(surface.name, underground_layer_index_end + 1))
+        --local target_underground_layer_number = current_underground_layer_number + 1
+        return game.get_surface(top_surface_name)
+    end
+    --if we're not underground then we are in our own root
+    return surface
+end
+
+function Zone.get_depth_from_root(surface)
+    -- first check if we're on an underground layer
+    if string.find(surface.name, "underground %- layer") then
+        -- we are on an underground layer, so we need to check the next underground layer.
+        local _, underground_layer_index_end = string.find(surface.name, "underground %- layer ")
+        local top_surface_name = string.gsub(surface.name, " underground %- layer %d+", "")
+        local current_underground_layer_number = tonumber(string.sub(surface.name, underground_layer_index_end + 1))
+        return current_underground_layer_number
+        --local target_underground_layer_number = current_underground_layer_number + 1
+    end
+    --if we're not underground then we are in our own root
+    return 0
+end
+
+
 function Zone.create_underground_layer_given_top_surface_name(top_surface_name, underground_layer)
     -- this is where we create new surfaces given which layer of the underground our surface should be on.
     -- then we call create_from_surface_index to turn them into Zones

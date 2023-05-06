@@ -4,6 +4,9 @@
 -- until we decide to add compatibility for said mods.
 local Underground = require("scripts/underground")
 local Zone = require("scripts/zone")
+local Boring = require("scripts/boring")
+local BoringGUI = require("scripts/boring-gui")
+local ElevatorGUI = require("scripts/elevator-gui")
 
 -- define local functions that will be used later (GUI stuff mostly?)
 local function build_travel_interface(player)
@@ -69,6 +72,11 @@ function OnInit(event)
 
     global.zones_by_surface_index = global.zones_by_surface_index or {}
     global.zones_by_name = global.zones_by_name or {}
+
+    --Init checks for boring
+    if global.boring_drills==nil then global.boring_drills = {} end
+    if global.boring_drill_guis==nil then global.boring_drill_guis = {} end
+    if global.elevators==nil then global.elevators = {} end
 
     -- save the map settings the player chose then change nauvis to not spawn the ores we want underground.
     global.chosen_map_settings = global.chosen_map_settings or game.default_map_gen_settings
@@ -158,6 +166,8 @@ function GuiClick(event)
         end
 
     end
+
+    ElevatorGUI.OnGuiClicked(event)
 end
 
 function OnBuiltEntity(event)
@@ -197,12 +207,36 @@ function OnBuiltEntity(event)
 
         -- this is how you create the arbitrary next underground layer
         -- Zone.create_underground_layer_given_top_surface_name(string.gsub(player.surface.name, " underground %- layer %d+", ""), 1)
-    else
+    elseif name == "wlw-boring-drill" then
+
+        local this_surface = surface
+        local root_surface = Zone.get_root(this_surface).name
+        local depth = Zone.get_depth_from_root(this_surface)
+        local depthplus = 10+ (depth *depth) -- 10,11,14,19
+
+		local data = 
+		{
+		drill=event.created_entity,
+		digs_needed= 5, --50,
+        ground_toughness = depthplus/20,
+        total_meters = math.floor(math.pow(depthplus,1.1)*10),
+        has_finished = false,
+        root_surface = root_surface,
+        current_depth = depth
+		}
+
+        data.digs_needed = math.floor(data.ground_toughness * data.total_meters)
+		
+        if global.boring_drills==nil then global.boring_drills = {} end
+
+        global.boring_drills[data.drill.unit_number] = data
+		data.drill.surface.print("Drill added")
+	end
+
         -- print every surface
         --for _, surface in pairs(global.zones_by_name) do
             --player.print("Zone name: " .. surface.name .. " Zone index: " .. surface.index)
         --end
-    end
 
     --local size = 5
 
@@ -374,6 +408,9 @@ function keyboard_toggle_travel_interface(event)
 end
 
 function OnTick(event)
+
+    Boring.OnTick(event)
+
     local nauvis = game.surfaces[1]
 
     -- this range is inclusive, first number and last number are possible.
@@ -429,11 +466,94 @@ function OnTick(event)
     end
 end
 
+function OnGuiOpened(event)
+    BoringGUI.OnGuiOpened(event)
+    ElevatorGUI.OnGuiOpened(event)
+end
+
 function OnGuiClosed(event)
     if event.element and event.element.name == "wlw_travel_frame" then
         local player = game.get_player(event.player_index)
         toggle_travel_interface(player)
     end
+
+    BoringGUI.OnGuiClosed(event)
+    ElevatorGUI.OnGuiClosed(event)
+end
+
+
+function convert_drill_to_elevator(drill_unit_number)
+    if global.boring_drills==nil then global.boring_drills = {} end
+    if global.elevators==nil then global.elevators = {} end
+    if global.active_links==nil then global.active_links = {} end
+
+    local drill_data = global.boring_drills[drill_unit_number]
+
+
+    local drill = drill_data.drill
+
+    local from_surface = drill.surface
+    --local to_surface = game.get_surface(Level.create_or_get_surface(drill_data.root_surface, drill_data.current_depth + 1))
+    local to_surface = game.get_surface(drill_data.root_surface .. " underground - layer " .. drill_data.current_depth + 1)
+
+    local top = from_surface.create_entity{name = "wlw-drill-elevator", position = drill.position, force=drill.force, raise_built=true}
+    top.destructible = false
+    top.minable = false
+    local bottom = to_surface.create_entity{name = "wlw-drill-elevator", position = drill.position, force=drill.force, raise_built=true}
+    bottom.destructible = false
+    bottom.minable = false
+
+    local top_pole = from_surface.create_entity{name = "small-electric-pole", position = drill.position, force=drill.force, raise_built=true}
+
+    local bottom_pole = to_surface.create_entity{name = "small-electric-pole", position = drill.position, force=drill.force, raise_built=true}
+
+    top_pole.connect_neighbour(bottom_pole)
+
+    top_pole.destructible = false
+    top_pole.minable = false
+
+    bottom_pole.destructible = false
+    bottom_pole.minable = false
+    --we should also destroy the drilling data
+
+    local inventory= drill.get_module_inventory()
+
+    for j = 1, #inventory do
+        local item_stack = inventory[j]
+        --from_surface.print("Dropping items ".. amount)
+        from_surface.spill_item_stack(drill.position,item_stack,false,drill.force,false)
+    end
+    
+    local inventory= drill.get_inventory(defines.inventory.assembling_machine_input)
+
+    for j = 1, #inventory do
+        local item_stack = inventory[j]
+        --from_surface.print("Dropping items ".. amount)
+        from_surface.spill_item_stack(drill.position,item_stack,false,drill.force,false)
+    end
+
+    drill.destroy()
+
+    local elevator_data = {
+        top_entity = top,
+        bottom_entity = bottom
+    }
+
+    local id = GetUnusedLinkId()
+    global.active_links[id] = elevator_data
+    top.link_id = id
+    bottom.link_id = id
+
+    global.elevators[top.unit_number] = top
+    global.elevators[bottom.unit_number] = bottom
+end
+
+function GetUnusedLinkId()
+    local id = math.random(2000) + 1000
+    if global.active_links[id] == nil then
+        return id
+    end
+    return GetUnusedLinkId()
 end
 
 -- register events to be listened to
@@ -452,5 +572,6 @@ script.on_event(defines.events.on_surface_created, SurfaceCreated)
 script.on_event(defines.events.on_surface_deleted, SurfaceDeleted)
 script.on_event(defines.events.on_lua_shortcut, LuaShortcut)
 script.on_event(defines.events.on_gui_selection_state_changed, GuiSelectionStateChanged)
+script.on_event(defines.events.on_gui_opened, OnGuiOpened)
 script.on_event(defines.events.on_gui_closed, OnGuiClosed)
 script.on_event("wlw-toggle-travel-interface", keyboard_toggle_travel_interface)

@@ -17,6 +17,7 @@ require("prototypes.entity.resources")
 require("prototypes.entity.turrets")
 require("prototypes.entity.units")
 require("prototypes.entity.boring-drill")
+require("prototypes.entity.drill-elevator")
 
 -- fluids
 require("prototypes.fluid.fluids")
