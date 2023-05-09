@@ -102,6 +102,12 @@ function OnConfigurationChanged(event)
 end
 
 function GuiClick(event)
+
+    --Passing along the event to multiple things runs the risk of the context being destroyed before we can access it
+    --We should probably just check if the given gui element is still valid before doing anything else
+    ElevatorGUI.OnGuiClicked(event)
+
+
     -- get the player who clicked
     local player = game.get_player(event.player_index)
 
@@ -167,7 +173,6 @@ function GuiClick(event)
 
     end
 
-    ElevatorGUI.OnGuiClicked(event)
 end
 
 function OnBuiltEntity(event)

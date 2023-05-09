@@ -14,7 +14,7 @@ function ElevatorGUI.OnGuiOpened(event)
             type="button",
             caption="Travel",
             style="green_button",
-            name= "wlw-travel-button"
+            name= "wlw-e-travel-button"
         }
 
 
@@ -35,7 +35,7 @@ function ElevatorGUI.OnGuiClosed(event)
 end
 
 function ElevatorGUI.OnGuiClicked(event)
-        if event.element.name == "wlw-travel-button" then
+        if event.element.name == "wlw-e-travel-button" then
             --game.print("Descending")
             local player = game.get_player(event.player_index)
             local entity = global.elevators[global.elevator_guis[event.player_index].entity_id]

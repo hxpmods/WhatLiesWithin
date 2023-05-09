@@ -53,25 +53,89 @@ local function resource(resource_parameters, autoplace_parameters)
     }
   end
 
+
+silver = resource(
+    {
+        name = "wlw-silver-ore",
+        order = "b",
+        map_color = {100,100,190,255},
+        mining_time = 1,
+        walking_sound = sounds.ore,
+        mining_visualisation_tint = {r = 0.4, g = 0.4, b = 0.4, a = 1.000},
+    },
+    {
+        base_density = 6,
+        starting_area_placement = false,
+        -- these are stone defaults, idk what they do yet so use them always.
+        regular_rq_factor_multiplier = 1.0,
+        starting_rq_factor_multiplier = 1.1
+    }
+)
+
+silver.stages_effect =
+{
+  sheet =
+  {
+      filename = "__WhatLiesWithin__/graphics/entity/ores/silver-glow.png",
+      priority = "extra-high",
+      width = 128,
+      height = 128,
+      frame_count = 8,
+      variation_count = 8,
+      scale = 0.5,
+      blend_mode = "additive",
+      flags = {"light"}
+  }
+}
+silver.effect_animation_period = 10
+silver.effect_animation_period_deviation = 1
+silver.effect_darkness_multiplier = 3
+silver.min_effect_alpha = 0.1
+silver.max_effect_alpha = 0.9
+
+gold = resource(
+    {
+        name = "wlw-gold-ore",
+        order = "b",
+        map_color = {0.9, 0.9, 0},
+        mining_time = 1,
+        walking_sound = sounds.ore,
+        mining_visualisation_tint = {r = 0.5, g = 0.5, b = 0, a = 1.000},
+    },
+    {
+        base_density = 6,
+        starting_area_placement = false,
+        -- these are stone defaults, idk what they do yet so use them always.
+        regular_rq_factor_multiplier = 1.0,
+        starting_rq_factor_multiplier = 1.1
+    }
+)
+
+gold.stages_effect =
+{
+  sheet =
+  {
+      filename = "__WhatLiesWithin__/graphics/entity/ores/gold-glow.png",
+      priority = "extra-high",
+      width = 128,
+      height = 128,
+      frame_count = 8,
+      variation_count = 8,
+      scale = 0.5,
+      blend_mode = "additive",
+      flags = {"light"}
+  }
+}
+gold.effect_animation_period = 10
+gold.effect_animation_period_deviation = 1
+gold.effect_darkness_multiplier = 3
+gold.min_effect_alpha = 0.1
+gold.max_effect_alpha = 0.9
+
 data:extend(
     {
-        resource(
-            {
-                name = "wlw-gold-ore",
-                order = "b",
-                map_color = {0.9, 0.9, 0},
-                mining_time = 1,
-                walking_sound = sounds.ore,
-                mining_visualisation_tint = {r = 0.5, g = 0.5, b = 0, a = 1.000},
-            },
-            {
-                base_density = 6,
-                starting_area_placement = false,
-                -- these are stone defaults, idk what they do yet so use them always.
-                regular_rq_factor_multiplier = 1.0,
-                starting_rq_factor_multiplier = 1.1
-            }
-        ),
+        gold,
+        silver,
         resource(
             {
                 name = "wlw-lead-ore",
@@ -97,23 +161,6 @@ data:extend(
                 mining_time = 1,
                 walking_sound = sounds.ore,
                 mining_visualisation_tint = {r = 0, g = 0.5, b = 0, a = 1.000},
-            },
-            {
-                base_density = 6,
-                starting_area_placement = false,
-                -- these are stone defaults, idk what they do yet so use them always.
-                regular_rq_factor_multiplier = 1.0,
-                starting_rq_factor_multiplier = 1.1
-            }
-        ),
-        resource(
-            {
-                name = "wlw-silver-ore",
-                order = "b",
-                map_color = {100,100,190,255},
-                mining_time = 1,
-                walking_sound = sounds.ore,
-                mining_visualisation_tint = {r = 0.4, g = 0.4, b = 0.4, a = 1.000},
             },
             {
                 base_density = 6,
